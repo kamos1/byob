@@ -6,7 +6,7 @@ const createJob = (knex, job) => {
     title: job.title
   }, 'id')
   .then(jobId => {
-    let employeesPromises = [];
+    let employeesPromises = []
 
     employees.forEach(employee => {
       employeesPromises.push(
