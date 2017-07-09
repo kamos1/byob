@@ -18,6 +18,9 @@
     "rules": {
         "no-undef": 0,
         "no-unused-labels": 0,
-        "no-unused-vars": 0
+        "no-unused-vars": 0,
+        "semi": 2,
+        "semi-style": 2,
+        "no-extra-semi": 2
     }
 }
