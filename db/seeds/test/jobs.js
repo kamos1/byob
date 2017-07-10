@@ -12,6 +12,7 @@ const createJob = (knex, job) => {
       employeesPromises.push(
         createEmployee(knex, {
           fullname: employee.fullname,
+          name: employee.name,
           first_name: employee.first_name,
           last_name: employee.last_name,
           salary: employee.salary,
