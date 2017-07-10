@@ -15,7 +15,8 @@ const createJob = (knex, job) => {
           first_name: employee.first_name,
           last_name: employee.last_name,
           salary: employee.salary,
-          job_id: employee.job_id
+          job_id: employee.job_id,
+          name:employee.name,
         })
       );
     });
