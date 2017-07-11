@@ -14,8 +14,7 @@ const getAllJobs = (request, response) => {
 
 const getJob = (request, response) => {
   database('jobs').where('title', request.params.id).select()
-    .then((title) => {  
-    console.log(title.length) 
+    .then((title) => {
       if (title.length > 0) {
         response.status(200).json(title[0]);
       } else {
@@ -36,9 +35,22 @@ const getAllEmployees = (request, response) => {
     .catch(error => response.status(500).json({error}));
 };
 
+const getEmployee = (request, response) => {
+  database('employees').where('name', request.params.id).select()
+    .then((employee) => {
+      if (employee.length > 0) {
+        response.status(200).json(employee);
+      } else {
+        response.status(404).json({error: `No employee was with the name ${request.params.id}`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
 
 module.exports = {
   getAllJobs,
   getJob,
-  getAllEmployees
+  getAllEmployees,
+  getEmployee
 };
