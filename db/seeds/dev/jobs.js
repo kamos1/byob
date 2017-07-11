@@ -15,7 +15,9 @@ const createJob = (knex, job) => {
           first_name: employee.first_name,
           last_name: employee.last_name,
           salary: employee.salary,
-          job_id: employee.job_id
+          job_id: employee.job_id,
+          name: employee.name,
+          id: employee.id
         })
       );
     });
@@ -29,7 +31,7 @@ const createEmployee = (knex, employee) => {
 
 
 exports.seed = function(knex, Promise) {
-  return knex('employees').del()
+ return knex('employees').del()
     .then(() => knex('jobs').del())
     .then(() => {
       let jobPromises = [];

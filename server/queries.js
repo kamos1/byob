@@ -12,8 +12,45 @@ const getAllJobs = (request, response) => {
   .catch(error => response.status(500).json({ error}));
 };
 
+const getJob = (request, response) => {
+  database('jobs').where('title', request.params.id).select()
+    .then((title) => {
+      if (title.length > 0) {
+        response.status(200).json(title[0]);
+      } else {
+        response.status(404).json({error: `No title was found for ${request.params.id}`});
+      }
+    });
+};
+
+const getAllEmployees = (request, response) => {
+  database('employees').select()
+    .then((emploeesArray) => {
+      if(emploeesArray.length) {
+        response.status(200).json(emploeesArray);
+      } else {
+        response.status(404).json({error: 'No employees were found'});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
+const getEmployee = (request, response) => {
+  database('employees').where('name', request.params.id).select()
+    .then((employee) => {
+      if (employee.length > 0) {
+        response.status(200).json(employee);
+      } else {
+        response.status(404).json({error: `No employee was with the name ${request.params.id}`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
 
 module.exports = {
   getAllJobs,
-  getAllEmployees
+  getJob,
+  getAllEmployees,
+  getEmployee
 };
