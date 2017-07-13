@@ -1,5 +1,5 @@
-const jobs = require('../../../jobs.json');
-const employees = require('../../../employees');
+const jobs = require('../../../seedJobs.json');
+const employees = require('../../../seedEmployees');
 
 const createJob = (knex, job) => {
   return knex('jobs').insert({

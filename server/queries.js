@@ -23,6 +23,23 @@ const getJob = (request, response) => {
     });
 };
 
+const addJob = (request, response) => {
+  const job = request.body;
+
+  for (let requiredParams of ['title']) {
+    if(!job[requiredParams]) {
+      response.status(422).json({
+        error: `Expected format: title: <string>. You're missing a ${requiredParams}`});
+    }
+  }
+
+  database('jobs').insert(job, 'id')
+    .then((job) => {
+      response.status(201).json({id: job[0]});
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
 const getAllEmployees = (request, response) => {
   database('employees').select()
     .then((emploeesArray) => {
@@ -47,10 +64,30 @@ const getEmployee = (request, response) => {
     .catch(error => response.status(500).json({error}));
 };
 
+const addEmployee = (request, response) => {
+  const employee = request.body;
+  console.log(employee);
+
+  for(let requiredParams of ['fullname', 'first_name', 'last_name', 'salary', 'job_id', 'name'])
+    if(!employee[requiredParams]) {
+      return response.status(422).json({error: `Expected format: { fullname: <string>, first_name: <string>, last_name: <string>, salary: <integer>, job_id: <integer>, name: <string>}. You are missing a ${requiredParams} property`});
+    }
+
+  database('employees').insert(employee, 'id')
+    .then((employee) => {
+      response.status(201).json({id: employee[0]});
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
+
+
 
 module.exports = {
   getAllJobs,
   getJob,
+  addJob,
   getAllEmployees,
-  getEmployee
+  getEmployee,
+  addEmployee
 };
