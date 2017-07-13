@@ -12,9 +12,9 @@ module.exports = {
     useNullAsDefault: true
   },
 
-  testing: {
+  test: {
     client: 'pg',
-    connection: 'postgres://localhost/byob_test',
+    connection: process.env.DATABASE_URL || 'postgres://localhost/byob_test',
     migrations: {
       directory: './db/migrations'
     },

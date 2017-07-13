@@ -20,7 +20,8 @@ const getJob = (request, response) => {
       } else {
         response.status(404).json({error: `No title was found for ${request.params.id}`});
       }
-    });
+    })
+    .catch(err => response.status(500).json({error}));
 };
 
 const addJob = (request, response) => {
@@ -96,8 +97,7 @@ const getAllEmployeesByTitle = (request, response) => {
         }
       });
     })
-     
-    .catch(error => response.status(500).json({error}));
+    .catch(error => response.status(404).json({error: `${request.query.job} doesn't exist`}));
 };
 
 const getEmployee = (request, response) => {
