@@ -83,19 +83,25 @@ const deleteJob = (request, response) => {
 
 };
 
-const getAllEmployees = (request, response) => {
-  database('employees').select()
-    .then((emploeesArray) => {
-      if(emploeesArray.length) {
-        response.status(200).json(emploeesArray);
-      } else {
-        response.status(404).json({error: 'No employees were found'});
-      }
+const getAllEmployeesByTitle = (request, response) => {
+  database('jobs').where('title', request.query.job).select()
+    .then((job) => {
+      const id = job[0].id;
+      database('employees').where('id', id).select()
+      .then((employeeArray) => {
+        if (!employeeArray.length < 1) {
+          response.status(200).json({employeeArray});
+        } else {
+          response.status(404).json({error: `No employees were found with the title ${request.query.job}`});
+        }
+      });
     })
+     
     .catch(error => response.status(500).json({error}));
 };
 
 const getEmployee = (request, response) => {
+
   database('employees').where('name', request.params.id).select()
     .then((employee) => {
       if (employee.length > 0) {
@@ -173,7 +179,7 @@ module.exports = {
   addJob,
   updateJob,
   deleteJob,
-  getAllEmployees,
+  getAllEmployeesByTitle,
   getEmployee,
   addEmployee,
   updateEmployeeSalary,
