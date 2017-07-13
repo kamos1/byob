@@ -40,6 +40,49 @@ const addJob = (request, response) => {
     .catch(error => response.status(500).json({error}));
 };
 
+const updateJob = (request, response) => {
+  const update = request.body;
+
+  for (let requiredParams of ['title']) {
+    if(!update[requiredParams]) {
+      response.status(422).json({
+        error: `Expected format: title: <string>. You're missing a ${requiredParams}`});
+    }
+  }
+
+  database('jobs').where('title', request.params.id)
+    .update({title: request.body.title})
+    .then((res) => {
+      if (res === 1) {
+        response.status(201).json({success: `${request.params.id} has been updated`});
+      } else {
+        response.status(204).json({error: `${request.params.id} was not updated`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
+const deleteJob = (request, response) => {
+  const job = request.body;
+
+  for(let requiredParams of ['title']) 
+    if(!job[requiredParams]) {
+      return response.status(422).json({error: `Expected format: { title: <string>}. You are missing a ${requiredParams} property`});
+    }
+
+  database('jobs').where('title', job.title)
+    .delete()
+    .then((res) => {
+      if (res === 1) {
+        response.status(200).json({success: `${request.params.id} was deleted`});
+      } else {
+        response.status(404).json({error: `${request.params.id} was not found and was not deleted`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+
+};
+
 const getAllEmployees = (request, response) => {
   database('employees').select()
     .then((emploeesArray) => {
@@ -66,7 +109,6 @@ const getEmployee = (request, response) => {
 
 const addEmployee = (request, response) => {
   const employee = request.body;
-  console.log(employee);
 
   for(let requiredParams of ['fullname', 'first_name', 'last_name', 'salary', 'job_id', 'name'])
     if(!employee[requiredParams]) {
@@ -80,6 +122,48 @@ const addEmployee = (request, response) => {
     .catch(error => response.status(500).json({error}));
 };
 
+const updateEmployeeSalary = (request, response) => {
+  const update = request.body;
+
+  for(let requiredParams of ['salary']) {
+    if(!update[requiredParams]) {
+      return response.status(422).json({error: `Expected format: { salary: <integer> }. You are missing a ${requiredParams} property`});
+    }
+  }
+
+  database('employees').where('name', request.params.id)
+    .update({salary: request.body.salary})
+    .then((res) => {
+      if (res === 1) {
+        response.status(201).json({success: `${request.params.id} has been updated`});
+      } else {
+        response.status(204).json({error: `${request.params.id} was not updated`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+};
+
+const deleteEmployee = (request, response) => {
+  const employee = request.body;
+
+  for(let requiredParams of ['name']) 
+    if(!employee[requiredParams]) {
+      return response.status(422).json({error: `Expected format: { name: <string>}. You are missing a ${requiredParams} property`});
+    }
+
+  database('employees').where('name', employee.name)
+    .delete()
+    .then((res) => {
+      if (res === 1) {
+        response.status(200).json({success: `${request.params.id} was deleted`});
+      } else {
+        response.status(404).json({error: `${request.params.id} was not found and was not deleted`});
+      }
+    })
+    .catch(error => response.status(500).json({error}));
+
+};
+
 
 
 
@@ -87,7 +171,11 @@ module.exports = {
   getAllJobs,
   getJob,
   addJob,
+  updateJob,
+  deleteJob,
   getAllEmployees,
   getEmployee,
-  addEmployee
+  addEmployee,
+  updateEmployeeSalary,
+  deleteEmployee
 };
