@@ -20,7 +20,8 @@ const getJob = (request, response) => {
       } else {
         response.status(404).json({error: `No title was found for ${request.params.id}`});
       }
-    });
+    })
+    .catch(err => response.status(500).json({error}));
 };
 
 const addJob = (request, response) => {
@@ -47,57 +48,57 @@ const updateJob = (request, response) => {
     if(!update[requiredParams]) {
       response.status(422).json({
         error: `Expected format: title: <string>. You're missing a ${requiredParams}`});
+    } else {
+      database('jobs').where('title', request.params.id)
+        .update({title: request.body.title})
+        .then((res) => {
+        if (res === 1) {
+          response.status(201).json({success: `${request.params.id} has been updated`});
+        }
+      })
+        .catch(error => response.status(500).json({error}));
     }
   }
 
-  database('jobs').where('title', request.params.id)
-    .update({title: request.body.title})
-    .then((res) => {
-      if (res === 1) {
-        response.status(201).json({success: `${request.params.id} has been updated`});
-      } else {
-        response.status(204).json({error: `${request.params.id} was not updated`});
-      }
-    })
-    .catch(error => response.status(500).json({error}));
+  
 };
 
 const deleteJob = (request, response) => {
-  const job = request.body;
-
-  for(let requiredParams of ['title']) 
-    if(!job[requiredParams]) {
-      return response.status(422).json({error: `Expected format: { title: <string>}. You are missing a ${requiredParams} property`});
-    }
-
-  database('jobs').where('title', job.title)
-    .delete()
-    .then((res) => {
-      if (res === 1) {
-        response.status(200).json({success: `${request.params.id} was deleted`});
-      } else {
-        response.status(404).json({error: `${request.params.id} was not found and was not deleted`});
-      }
+  database('jobs').where('title', request.params.id).select()
+    .then((job) => {
+      const id = job[0].id;
+      database('employees').where('job_id', id)
+      .delete()
+      .then(() => {
+        const title = (job[0].title);
+        database('jobs').where('title', title).select()
+        .del()
+        .then((res) => {
+          if (res === 1) {
+            response.status(200).json({success: `${request.params.id} was deleted`});
+          }
+        })
+        .catch(error => response.status(404).json({error: `${request.params.id} was not deleted` }));
+      })
+      .catch(error => response.status(404).json({error: `Cannot find employees with ${job[0].id}` }));
     })
-    .catch(error => response.status(500).json({error}));
-
+    .catch(error => response.status(404).json({error: `Cannot find ${request.params.id}`}));
 };
 
 const getAllEmployeesByTitle = (request, response) => {
   database('jobs').where('title', request.query.job).select()
     .then((job) => {
       const id = job[0].id;
-      database('employees').where('id', id).select()
+      database('employees').where('job_id', id).select()
       .then((employeeArray) => {
         if (!employeeArray.length < 1) {
-          response.status(200).json({employeeArray});
+          response.status(200).json(employeeArray[0]);
         } else {
           response.status(404).json({error: `No employees were found with the title ${request.query.job}`});
         }
       });
     })
-     
-    .catch(error => response.status(500).json({error}));
+    .catch(error => response.status(404).json({error: `${request.query.job} doesn't exist`}));
 };
 
 const getEmployee = (request, response) => {
@@ -167,7 +168,6 @@ const deleteEmployee = (request, response) => {
       }
     })
     .catch(error => response.status(500).json({error}));
-
 };
 
 
