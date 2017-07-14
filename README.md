@@ -1,8 +1,8 @@
-#Project Name: BYOD
+# Project Name: BYOD
  -	*Create a backend with Express and Knex with a Postgresql database. The data for this backend is the White House Staff salary and job information.*
 
 
-##Endpoints
+## Endpoints
 ### get - /api/v1/jobs
 - Returns all job titles
 
