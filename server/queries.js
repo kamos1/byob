@@ -1,4 +1,5 @@
 const database = require('../db/knex');
+const jwt = require('jsonwebtoken');
 
 const getAllJobs = (request, response) => {
   database('jobs').select()
@@ -171,6 +172,59 @@ const deleteEmployee = (request, response) => {
 };
 
 
+const authenticate = (request, response) => {
+  const user = request.body;
+
+    if (user.username !== process.env.USERNAME || user.password !== process.env.PASSWORD) {
+      response.status(403).send({
+        success: false,
+        message: 'Invalid Credentials'
+      });
+    }
+
+    else {
+      let token = jwt.sign(user, process.env.CLIENT_SECRET, {
+        expiresIn: 1210000 
+      });
+
+      response.json({
+        success: true,
+        username: user.username,
+        token: token
+      });
+    }
+};
+
+const checkAuth = (request, response, next) => {
+
+  const token = request.body.token ||
+                request.param('token') ||
+                request.headers['authorization'];
+
+  if (token) {
+    jwt.verify(token, process.env.CLIENT_SECRET, (error, decoded) => {
+
+    if (error) {
+      return response.status(403).send({
+        success: false,
+        message: 'Invalid authorization token.'
+      });    
+    }
+
+    else {
+      request.decoded = decoded;  
+      next();
+    }
+  });
+  }
+
+  else {
+    return response.status(403).send({
+      success: false,
+      message: 'You must be authorized to hit this endpoint'
+    });
+  }
+};
 
 
 module.exports = {
@@ -183,5 +237,7 @@ module.exports = {
   getEmployee,
   addEmployee,
   updateEmployeeSalary,
-  deleteEmployee
+  deleteEmployee,
+  authenticate,
+  checkAuth
 };

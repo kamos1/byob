@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
+const config = require('dotenv').config().parsed;
 
 const routes = require('./endpoints');
 
@@ -15,6 +15,12 @@ app.get('/', (request, response) => {
 });
 
 app.use('/', routes);
+
+if (!config.CLIENT_SECRET || !config.USERNAME || !config.PASSWORD) {
+  throw 'Make sure you have a CLIENT_SECRET, USERNAME, and PASSWORD in your .env file';
+}
+
+app.set('secretKey', config.CLIENT_SECRET);
 
 app.listen(app.get('port'), () => {
   console.log(`server is running on ${app.get('port')}.`);
