@@ -1,8 +1,5 @@
 const database = require('../db/knex');
 const jwt = require('jsonwebtoken');
-// const express = require('express');
-// const app = express();
-const app = require('./server');
 
 const getAllJobs = (request, response) => {
   database('jobs').select()
