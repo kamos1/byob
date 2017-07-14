@@ -1,5 +1,5 @@
 const jobs = require('../../../seedJobs');
-const employees = require('../../../employees');
+const employees = require('../../../seedEmployees');
 
 const createJob = (knex, job) => {
   return knex('jobs').insert({
