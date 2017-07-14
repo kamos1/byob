@@ -16,7 +16,7 @@ app.get('/', (request, response) => {
 
 app.use('/', routes);
 
-if (!config.CLIENT_SECRET || !config.USERNAME || !config.PASSWORD) {
+if (!config.CLIENT_SECRET || !config.USERNAME || !config.PASSWORD || !process.env.CLIENT_SECRET || !process.env.USERNAME || !process.env.PASSWORD) {
   throw 'Make sure you have a CLIENT_SECRET, USERNAME, and PASSWORD in your .env file';
 }
 
