@@ -7,11 +7,13 @@ const chaiHttp = require('chai-http');
 const server = require('../server/server');
 const knex = require('../db/knex');
 
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZvbyIsInBhc3N3b3JkIjoiYmFyIiwiaWF0IjoxNTAwMDU0MDA2LCJleHAiOjE1MDEyNjQwMDZ9.HPH9BJhuHHdyQakmlwxYcuO-wz28MulivnWz1batCwk";
+
 chai.use(chaiHttp);
 
 describe('API Routes', () => {
 
- beforeEach((done) => {
+  beforeEach((done) => {
     knex.migrate.rollback()
     .then(() => {
       knex.migrate.latest()
@@ -23,6 +25,7 @@ describe('API Routes', () => {
       });
     });
   });
+  
 
   describe('GET /api/v1/jobs/', () => {
     it('should return all jobs', (done) => {
@@ -87,7 +90,7 @@ describe('API Routes', () => {
   describe('GET /api/v1/employees/:id', () => {
     it('should return an employee', (done) => {
       chai.request(server)
-      .get('/api/v1/employees/Vanessa Morrone')
+      .get('/api/v1/employees/Ivanka Trump')
       .end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
@@ -111,7 +114,7 @@ describe('API Routes', () => {
   describe('POST /api/v1/employees', () => {
     it('should create a new employee', (done) => {
       chai.request(server)
-      .post('/api/v1/employees')
+      .post(`/api/v1/employees/?token=${token}`)
       .send({
         fullname: "Man Spider",
         name:"Spider Man",
@@ -140,6 +143,7 @@ describe('API Routes', () => {
       chai.request(server)
       .post('/api/v1/employees')
       .send({
+        token: token,
         first_name: "Spider",
         last_name: "Man",
         salary: 56000,
@@ -156,9 +160,9 @@ describe('API Routes', () => {
   describe('POST /api/v1/jobs', () => {
     it('should create a new job', (done) => {
       chai.request(server)
-      .post('/api/v1/jobs')
+      .post(`/api/v1/jobs/?token=${token}`)
       .send({
-        title: "student",
+        title: "student"
       })
       .end((err, response) => {
         response.should.have.status(201);
@@ -181,6 +185,7 @@ describe('API Routes', () => {
       chai.request(server)
       .post('/api/v1/employees')
       .send({
+        token: token,
         first_name: "Spider",
         last_name: "Man",
         salary: 56000,
@@ -199,6 +204,7 @@ describe('API Routes', () => {
       chai.request(server)
       .patch('/api/v1/employees/Ivanka Trump/salary')
       .send({
+        token: token,
         salary: 1
       })
       .end((err, response) => {
@@ -222,6 +228,7 @@ describe('API Routes', () => {
       chai.request(server)
       .patch('/api/v1/employees/Ivanka Trump/salary')
       .send({
+        token: token,
         salad: 1
       })
       .end((err, response) => {
@@ -237,7 +244,8 @@ describe('API Routes', () => {
       chai.request(server)
       .patch('/api/v1/jobs/STENOGRAPHER/title')
       .send({
-        title: "keji",
+        token: token,
+        title: "keji"
       })
       .end((err, response) => {
         response.should.have.status(201);
@@ -260,7 +268,8 @@ describe('API Routes', () => {
       chai.request(server)
       .patch('/api/v1/jobs/STENOGRAPHER/title')
       .send({
-        asdf: "keji",
+        token: token,
+        asdf: "keji"
       })
       .end((err, response) => {
         response.should.have.status(422);
@@ -276,7 +285,7 @@ describe('API Routes', () => {
       chai.request(server)
       .delete('/api/v1/employees/Ivanka Trump/')
       .send({
-        name: 'Ivanka Trump'
+        token: token
       })
       .end((err, response) => {
         response.should.have.status(200);
@@ -296,9 +305,9 @@ describe('API Routes', () => {
 
     it('should not delete an employee', (done) => {
       chai.request(server)
-      .delete('/api/v1/employees/Ivanka Trump/')
+      .delete('/api/v1/employees/keji/')
       .send({
-        name: 'keji'
+        token: token
       })
       .end((err, response) => {
         response.should.have.status(404);
@@ -313,6 +322,9 @@ describe('API Routes', () => {
     it('should delete a job', (done) => {
       chai.request(server)
       .delete('/api/v1/jobs/STENOGRAPHER')
+      .send({
+        token: token
+      })
       .end((err, response) => {
         response.should.have.status(200);
         response.should.be.json;
@@ -332,6 +344,9 @@ describe('API Routes', () => {
     it('should not delete a job', (done) => {
       chai.request(server)
       .delete('/api/v1/jobs/keji')
+      .send({
+        token: token
+      })
       .end((err, response) => {
         response.should.have.status(404);
         response.should.be.json;

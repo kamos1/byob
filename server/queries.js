@@ -103,7 +103,6 @@ const getAllEmployeesByTitle = (request, response) => {
 };
 
 const getEmployee = (request, response) => {
-
   database('employees').where('name', request.params.id).select()
     .then((employee) => {
       if (employee.length > 0) {
@@ -133,7 +132,7 @@ const addEmployee = (request, response) => {
 const updateEmployeeSalary = (request, response) => {
   const update = request.body;
 
-  for(let requiredParams of ['salary']) {
+  for(let requiredParams of ['salary', 'token']) {
     if(!update[requiredParams]) {
       return response.status(422).json({error: `Expected format: { salary: <integer> }. You are missing a ${requiredParams} property`});
     }
@@ -152,14 +151,7 @@ const updateEmployeeSalary = (request, response) => {
 };
 
 const deleteEmployee = (request, response) => {
-  const employee = request.body;
-
-  for(let requiredParams of ['name']) 
-    if(!employee[requiredParams]) {
-      return response.status(422).json({error: `Expected format: { name: <string>}. You are missing a ${requiredParams} property`});
-    }
-
-  database('employees').where('name', employee.name)
+  database('employees').where('name', request.params.id)
     .delete()
     .then((res) => {
       if (res === 1) {
@@ -198,7 +190,7 @@ const authenticate = (request, response) => {
 const checkAuth = (request, response, next) => {
 
   const token = request.body.token ||
-                request.param('token') ||
+                request.params('token') ||
                 request.headers['authorization'];
 
   if (token) {
