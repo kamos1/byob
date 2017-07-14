@@ -23,5 +23,13 @@
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "pg": "^6.4.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
+    "knex": "^0.13.0",
+    "nodemon": "^1.11.0",
+    "pg": "^6.4.1"
   }
 }
