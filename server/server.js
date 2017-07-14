@@ -20,7 +20,7 @@ if (!process.env.CLIENT_SECRET || !process.env.USERNAME || !process.env.PASSWORD
   throw 'Make sure you have a CLIENT_SECRET, USERNAME, and PASSWORD in your .env file';
 }
 
-app.set('secretKey', config.CLIENT_SECRET);
+app.set('secretKey', process.env.CLIENT_SECRET);
 
 app.listen(app.get('port'), () => {
   console.log(`server is running on ${app.get('port')}.`);
