@@ -4,13 +4,18 @@
 
 ## Endpoints
 ### get - /api/v1/jobs
-- Returns all job titles
+- This endpoint returns all job titles.
+	- id
+	- title 
 
 ### get - /api/v1/jobs/:id
-- Returns a specific job title
+- This endpoint returns a specific job title.
+	- id
+	- title	 
 
-### get - /api/v1/employees/
-- Returns all employees
+### get - /api/v1/employees/?title=STENOGRAPHER
+- This endpoint returns all employees by the provided job title.
+	- id
 	- fullname
 	- first name
 	- last name
@@ -18,7 +23,7 @@
 		 
 
 ### get - /api/v1/employees/:id
-- Returns a specific employee
+- This endpoint returns a specific employee based on the provided employee name.
 	- fullname
 	- first name
 	- last name
@@ -26,43 +31,44 @@
 
 
 ### post - /api/v1/employees/
-- Add an employee. A token is required to make this request.
+- This endpoint allows the user to add an employee. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns employee id
 - Required parameters: 
 	- 'fullname', 
 	- 'first_name', 
 	- 'last_name', 
-	- 'salary', 
-	- 'job_id', 
+	- salary, 
+	- job_id, 
 	- 'name'
 	 
 ### post - /api/v1/jobs/
-- Add a job. A token is required to make this request.
+- This endoint allows the user to add a job. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns job id
 - Required parameters:
 	- title 
 	
 ### post - /authenticate'
-- Returns a json web token
+- Use this endpoint to get a token that can be used with the POST, PATCH, and DELETE endpoints.
 
 
 ### patch - /api/v1/employees/:id/salary 
-- Updates an employee's salary. A token is required to make this request.
+- This endpoint allows the user to update an employee's salary. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns success or failure message
 - Required parameters:
 	- salary
 	- token
 	 
 ### patch - /api/v1/jobs/:id/title
-- Updates a job title. A token is required to make this request.
+- This endpoint updates a job title. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns success message
 - Required parameter:
 	- title 
+	- token
 	
 ### delete - /api/v1/employees/:id/
-- Remove an employee. A token is required to make this request.
+- Remove an employee. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns success or failure message
 
 ### delete -'/api/v1/jobs/:id/
-- Remove a job. A token is required to make this request.
+- Remove a job. A token is required to make this request. Use the ```/authenticate``` endpoint to get a token.
 - Returns success or failure message
