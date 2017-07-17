@@ -75,6 +75,18 @@ describe('API Routes', () => {
       });
     });
 
+    it('should return all employees', (done) => {
+      chai.request(server)
+      .get('/api/v1/employees/')
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('array');
+        response.body.length.should.equal(377);
+        done();
+      });
+    });
+
     it('should not return employees by title', (done) => {
       chai.request(server)
       .get('/api/v1/employees/?job=keji')
