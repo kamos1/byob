@@ -86,8 +86,14 @@ const deleteJob = (request, response) => {
     .catch(error => response.status(404).json({error: `Cannot find ${request.params.id}`}));
 };
 
-const getAllEmployeesByTitle = (request, response) => {
-  database('jobs').where('title', request.query.job).select()
+const getAllEmployees = (request, response) => {
+  if (!request.query.job) {
+    database('employees').select()
+    .then((employeesArray) => {
+        response.status(200).json(employeesArray);
+    });
+  } else {
+    database('jobs').where('title', request.query.job).select()
     .then((job) => {
       const id = job[0].id;
       database('employees').where('job_id', id).select()
@@ -100,6 +106,7 @@ const getAllEmployeesByTitle = (request, response) => {
       });
     })
     .catch(error => response.status(404).json({error: `${request.query.job} doesn't exist`}));
+  }
 };
 
 const getEmployee = (request, response) => {
@@ -225,7 +232,7 @@ module.exports = {
   addJob,
   updateJob,
   deleteJob,
-  getAllEmployeesByTitle,
+  getAllEmployees,
   getEmployee,
   addEmployee,
   updateEmployeeSalary,
